@@ -13,7 +13,7 @@ import { saveUserInterestsAction } from "../actions";
 import { Badge } from "@/components/ui/badge";
 import { Loader2 } from "lucide-react";
 import { Logo } from "@/components/logo";
-import { auth } from "@/lib/firebase";
+import { auth, isValidConfig } from "@/lib/firebase";
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -32,7 +32,7 @@ export default function SignUpPage() {
     const { toast } = useToast();
     const [loading, setLoading] = useState(false);
     const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
-    
+
     const toggleInterest = (interest: string) => {
         setSelectedInterests(prev =>
             prev.includes(interest) ? prev.filter(i => i !== interest) : [...prev, interest]
@@ -42,7 +42,18 @@ export default function SignUpPage() {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setLoading(true);
-        
+
+        // Check if Firebase is properly configured
+        if (!isValidConfig || !auth) {
+            toast({
+                variant: "destructive",
+                title: "Configuration Error",
+                description: "Firebase is not properly configured. Please check your environment variables.",
+            });
+            setLoading(false);
+            return;
+        }
+
         const formData = new FormData(event.currentTarget);
         const email = formData.get('email') as string;
         const password = formData.get('password') as string;
@@ -64,7 +75,7 @@ export default function SignUpPage() {
                 });
                 router.push('/competitions');
             } else {
-                 toast({
+                toast({
                     variant: "destructive",
                     title: "Uh oh! Something went wrong.",
                     description: result.error,
@@ -72,7 +83,7 @@ export default function SignUpPage() {
             }
 
         } catch (error: any) {
-             toast({
+            toast({
                 variant: "destructive",
                 title: "Sign Up Failed",
                 description: error.message || "An unexpected error occurred.",
@@ -84,7 +95,7 @@ export default function SignUpPage() {
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-background p-4 sm:p-6 md:p-8">
-             <div className="absolute top-8 left-8">
+            <div className="absolute top-8 left-8">
                 <Link href="/" className="flex items-center space-x-2 text-primary">
                     <Logo className="w-8 h-8" />
                     <span className="font-bold text-lg">Kaggle Ingest</span>
@@ -107,12 +118,12 @@ export default function SignUpPage() {
                                 <Input id="password" name="password" type="password" required minLength={6} />
                             </div>
                         </div>
-                        
+
                         <Separator />
 
                         <div className="space-y-4">
                             <Label className="text-center md:text-left block">Tell us what you're interested in (optional):</Label>
-                             {Object.entries(interestCategories).map(([category, tags]) => (
+                            {Object.entries(interestCategories).map(([category, tags]) => (
                                 <div key={category}>
                                     <h4 className="text-sm font-medium mb-2 text-muted-foreground">{category}</h4>
                                     <div className="flex flex-wrap gap-2">
@@ -128,14 +139,14 @@ export default function SignUpPage() {
                                         ))}
                                     </div>
                                 </div>
-                             ))}
+                            ))}
                         </div>
-                        
+
                         <Button type="submit" className="w-full !mt-8" disabled={loading}>
                             {loading ? <><Loader2 className="animate-spin mr-2" />Creating Account...</> : 'Sign Up and Start Learning'}
                         </Button>
                     </form>
-                     <div className="mt-4 text-center text-sm">
+                    <div className="mt-4 text-center text-sm">
                         Already have an account?{' '}
                         <Link href="/auth/sign-in" className="underline font-medium text-primary hover:text-primary/80">
                             Sign in

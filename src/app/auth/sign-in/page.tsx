@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { auth } from "@/lib/firebase";
+import { auth, isValidConfig } from "@/lib/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -25,9 +25,9 @@ export default function SignInPage() {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setLoading(true);
-        
-        // Check if Firebase is initialized
-        if (!auth) {
+
+        // Check if Firebase is properly configured
+        if (!isValidConfig || !auth) {
             toast({
                 variant: "destructive",
                 title: "Configuration Error",
@@ -57,7 +57,7 @@ export default function SignInPage() {
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-background p-4 sm:p-6 md:p-8">
-             <div className="absolute top-8 left-8">
+            <div className="absolute top-8 left-8">
                 <Link href="/" className="flex items-center space-x-2 text-primary">
                     <Logo className="w-8 h-8" />
                     <span className="font-bold text-lg">Kaggle Ingest</span>
