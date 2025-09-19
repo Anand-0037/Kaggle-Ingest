@@ -14,6 +14,9 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { Logo } from "@/components/logo";
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 export default function SignInPage() {
     const router = useRouter();
     const { toast } = useToast();
@@ -22,6 +25,18 @@ export default function SignInPage() {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setLoading(true);
+        
+        // Check if Firebase is initialized
+        if (!auth) {
+            toast({
+                variant: "destructive",
+                title: "Configuration Error",
+                description: "Firebase is not properly configured. Please check your environment variables.",
+            });
+            setLoading(false);
+            return;
+        }
+
         const formData = new FormData(event.currentTarget);
         const email = formData.get('email') as string;
         const password = formData.get('password') as string;

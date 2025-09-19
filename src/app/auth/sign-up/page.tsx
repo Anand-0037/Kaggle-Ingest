@@ -14,6 +14,9 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2 } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { auth } from "@/lib/firebase";
+
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { Separator } from "@/components/ui/separator";
 
