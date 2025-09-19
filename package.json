@@ -11,6 +11,12 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit"
   },
+  "overrides": {
+    "next-themes": {
+      "react": "$react",
+      "react-dom": "$react-dom"
+    }
+  },
   "dependencies": {
     "@genkit-ai/googleai": "^1.14.1",
     "@genkit-ai/next": "^1.14.1",

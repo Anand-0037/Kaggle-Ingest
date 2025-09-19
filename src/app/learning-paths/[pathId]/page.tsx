@@ -13,17 +13,17 @@ import { useEffect, useState } from 'react';
 type LearningPath = typeof learningPaths[0];
 
 interface PageProps {
-  params: { pathId: string } | Promise<{ pathId: string }>;
+  params: Promise<{ pathId: string }>;
 }
 
 export default function LearningPathDetailsPage({ params }: PageProps) {
   const [path, setPath] = useState<LearningPath | undefined>(undefined);
   const [pathId, setPathId] = useState<string | undefined>(undefined);
 
-  // Handle both sync and async params for Next.js compatibility
+  // Handle async params for Next.js 15
   useEffect(() => {
     const getPathId = async () => {
-      const resolvedParams = await Promise.resolve(params);
+      const resolvedParams = await params;
       setPathId(resolvedParams.pathId);
     };
 

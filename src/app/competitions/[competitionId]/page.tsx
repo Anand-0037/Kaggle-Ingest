@@ -18,7 +18,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import Link from 'next/link';
 
 interface PageProps {
-  params: { competitionId: string } | Promise<{ competitionId: string }>;
+  params: Promise<{ competitionId: string }>;
 }
 
 export default function CompetitionDetailsPage({ params }: PageProps) {
@@ -34,10 +34,10 @@ export default function CompetitionDetailsPage({ params }: PageProps) {
   const { toast } = useToast();
   const router = useRouter();
 
-  // Handle both sync and async params for Next.js compatibility
+  // Handle async params for Next.js 15
   useEffect(() => {
     const getCompetitionId = async () => {
-      const resolvedParams = await Promise.resolve(params);
+      const resolvedParams = await params;
       setCompetitionId(resolvedParams.competitionId);
     };
 
